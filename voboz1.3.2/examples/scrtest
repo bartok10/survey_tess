@@ -1,0 +1,10 @@
+#!/bin/bash -f
+../bin/voz1b1 pos_test 100 1024 test 2 0 0 0
+../bin/voz1b1 pos_test 100 1024 test 2 0 0 1
+../bin/voz1b1 pos_test 100 1024 test 2 0 1 0
+../bin/voz1b1 pos_test 100 1024 test 2 0 1 1
+../bin/voz1b1 pos_test 100 1024 test 2 1 0 0
+../bin/voz1b1 pos_test 100 1024 test 2 1 0 1
+../bin/voz1b1 pos_test 100 1024 test 2 1 1 0
+../bin/voz1b1 pos_test 100 1024 test 2 1 1 1
+../bin/voztie 2 test

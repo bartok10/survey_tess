@@ -1,0 +1,10 @@
+#!/bin/bash -f
+./voz1b1 pos_bin 0.4 1 prueba 2 0 0 0
+./voz1b1 pos_bin 0.4 1 prueba 2 0 0 1
+./voz1b1 pos_bin 0.4 1 prueba 2 0 1 0
+./voz1b1 pos_bin 0.4 1 prueba 2 0 1 1
+./voz1b1 pos_bin 0.4 1 prueba 2 1 0 0
+./voz1b1 pos_bin 0.4 1 prueba 2 1 0 1
+./voz1b1 pos_bin 0.4 1 prueba 2 1 1 0
+./voz1b1 pos_bin 0.4 1 prueba 2 1 1 1
+./voztie 2 prueba
