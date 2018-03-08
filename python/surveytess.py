@@ -2,6 +2,7 @@
 import numpy as np
 from scipy.spatial import Voronoi
 from astropy.table import Table
+import utils
 
 class ZobovTess():
   """Class for handling a Voronoi tesselation of volume from a galaxy survey
@@ -64,12 +65,14 @@ class ZobovTess():
       y = self.gal_table[id]["Y"]
       z = self.gal_table[id]["Z"]
       points += [[x,y,z]]
-    import pdb; pdb.set_trace()
-    vor = Voronoi(points, **kwargs)
+    # import pdb; pdb.set_trace()
+    vor = Voronoi(points, **kwargs)  # Scipy Voro
     if plot:
-      #do something
-      pass
+      utils.plot_voronoi(vor)
+
     return vor
+
+
 
   def read_adj_ascii(self, ascii_adj):
     f = open(ascii_adj, 'r')
