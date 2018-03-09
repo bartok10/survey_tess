@@ -1,43 +1,46 @@
 # coding: utf-8
 # %load python/RaDec2cartesian.py
 import numpy as np
-gal_pos = np.loadtxt('/home/jarmijo/SDSS/data/dim1/pos_RaDecZ.dat')
-edges = np.loadtxt('/home/jarmijo/SDSS/data/dim1/mock_edges.txt')
-cap = np.loadtxt('/home/jarmijo/SDSS/data/dim1/mock_cap.txt')
-ra_dim1 = gal_pos[:,0];dec_dim1=gal_pos[:,1];z_dim1=gal_pos[:,2]
-ra_b = ra_dim1[(ra_dim1>-1.3 + np.pi)&(ra_dim1<1.55+np.pi)]; dec_b = dec_dim1[(ra_dim1>-1.3 + np.pi)&(ra_dim1<1.55+np.pi)];z_b = z_dim1[(ra_dim1>-1.3 + np.pi)&(ra_dim1<1.55+np.pi)]
-ra_up = ra_b[(ra_b<1.2+np.pi)&(dec_b > 0.8 + np.pi/2.)]
-dec_up = dec_b[(ra_b<1.2+np.pi)&(dec_b > 0.8 + np.pi/2.)]
-z_up = z_b[(ra_b<1.2+np.pi)&(dec_b > 0.8 + np.pi/2.)]
+dir1= '/home/jarmijo/test_st/'
+gal_pos = np.loadtxt(dir1+'subsample.txt')
+edges = np.loadtxt(dir1+'mock_edges.txt')
+cap1 = np.loadtxt(dir1+'mock_cap_u.txt')
+cap2 = np.loadtxt(dir1+'mock_cap_b.txt')
 #
-ra_bot = ra_b[(ra_b<1.5+np.pi)&(dec_b < 0.8 + np.pi/2.)]
-dec_bot = dec_b[(ra_b<1.5+np.pi)&(dec_b < 0.8 + np.pi/2.)]
-z_bot = z_b[(ra_b<1.5+np.pi)&(dec_b < 0.8 + np.pi/2.)]
-ra_p = np.concatenate([ra_up,ra_bot]);dec_p = np.concatenate([dec_up,dec_bot]);z_p = np.concatenate([z_up,z_bot])
 c=299792.458;H0=68
 # se puede hacer lo mismo con rutinas  healpy
 ############# galaxias ############
-xp = c*z_p/H0 * np.cos(ra_p) * np.cos(dec_p)
-yp = c*z_p/H0 * np.sin(ra_p) * np.cos(dec_p)
-zp = c*z_p/H0 * np.sin(dec_p)
+xp = c*gal_pos[:,2]/H0 * np.cos(gal_pos[:,0]) * np.cos(gal_pos[:,1])
+yp = c*gal_pos[:,2]/H0 * np.sin(gal_pos[:,0]) * np.cos(gal_pos[:,1])
+zp = c*gal_pos[:,2]/H0 * np.sin(gal_pos[:,1])
 ########### edges (and holes) ############
 xe=c*edges[:,2]/H0 * np.cos(edges[:,0]) * np.cos(edges[:,1])
 ye=c*edges[:,2]/H0 * np.sin(edges[:,0]) * np.cos(edges[:,1])
 ze=c*edges[:,2]/H0 * np.sin(edges[:,1])
 ########### cap ################
-xc=c*cap[:,2]/H0 * np.cos(cap[:,0]) * np.cos(cap[:,1])
-yc=c*cap[:,2]/H0 * np.sin(cap[:,0]) * np.cos(cap[:,1])
-zc=c*cap[:,2]/H0 * np.sin(cap[:,1])
-xp -= (xe.min()- 0.1);yp -= (ye.min() - 0.1)
-xc -= (xe.min()- 0.1);yc -= (ye.min() - 0.1)
-xe -= (xe.min()- 0.1);ye -= (ye.min() - 0.1)
-p_file = open('/home/jarmijo/SDSS/data/dim1/dim1wedges.txt','a')
-p_file.write(str(len(xp)) + ' ' + str(len(xe) + len(xc)) + '\n')
+xc1=c*cap1[:,2]/H0 * np.cos(cap1[:,0]) * np.cos(cap1[:,1])
+yc1=c*cap1[:,2]/H0 * np.sin(cap1[:,0]) * np.cos(cap1[:,1])
+zc1=c*cap1[:,2]/H0 * np.sin(cap1[:,1])
+#
+xc2=c*cap2[:,2]/H0 * np.cos(cap2[:,0]) * np.cos(cap2[:,1])
+yc2=c*cap2[:,2]/H0 * np.sin(cap2[:,0]) * np.cos(cap2[:,1])
+zc2=c*cap2[:,2]/H0 * np.sin(cap2[:,1])
+
+#xp -= (xe.min()- 0.1);yp -= (ye.min() - 0.1)
+#xc1 -= (xe.min()- 0.1);yc1 -= (ye.min() - 0.1)
+#xc2 -= (xe.min()- 0.1);yc2 -= (ye.min() - 0.1)
+#xe -= (xe.min()- 0.1);ye -= (ye.min() - 0.1)
+np.savetxt(dir1+'gal_pos.txt',np.array([xp,yp,zp]).T)
+p_file = open(dir1+'cat_zobov.pos','a')
+p_file.write(str(len(xp)+len(xe)+len(xc1)+len(xc2)) + ' ' + str(len(xp)) + '\n')
 for i in range(len(xp)):
-    p_file.write('%.6f' %  xp[i] + ' ' + '%.6f' %  yp[i] + ' ' + '%.6f' %  zp[i] + '\n')
+    p_file.write('%.8f' %  xp[i] + ' ' + '%.8f' %  yp[i] + ' ' + '%.8f' %  zp[i] + '\n')
 for i in range(len(xe)):
-    p_file.write('%.6f' %  xe[i] + ' ' + '%.6f' %  ye[i] + ' ' + '%.6f' %  ze[i] + '\n')
-for i in range(len(xc)):
-    p_file.write('%.6f' %  xc[i] + ' ' + '%.6f' %  yc[i] + ' ' + '%.6f' %  zc[i] + '\n')
+    p_file.write('%.8f' %  xe[i] + ' ' + '%.8f' %  ye[i] + ' ' + '%.8f' %  ze[i] + '\n')
+for i in range(len(xc1)):
+    p_file.write('%.8f' %  xc1[i] + ' ' + '%.8f' %  yc1[i] + ' ' + '%.8f' %  zc1[i] + '\n')
+for i in range(len(xc2)):
+    p_file.write('%.8f' %  xc2[i] + ' ' + '%.8f' %  yc2[i] + ' ' + '%.8f' %  zc2[i] + '\n')
+
     
 p_file.close()

@@ -17,7 +17,7 @@ The input file should be a ascii-format file with information of the position of
 
 The outputs are 2 files that contains the volumes (*.vol) and the adjacency of the voronoi cells (*.adj), which are need to run the next step.
 
-2.- run jovoz to join cells and form voids.
+2.- run jozov to join cells and form voids.
 
 	voboz1.3.2/bin/jozov arg1 arg2 arg3 arg4
 
