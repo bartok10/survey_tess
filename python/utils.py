@@ -28,9 +28,9 @@ def plot_voronoi(vor, scale=1.):
     # euler's formula V - E + F = 2 (in 3D)
     #F = len(adj_pos)
 
-    poli = Poly3DCollection([vor.vertices])
-    poli.set_edgecolor('k')
-    ax.add_collection3d(poli)
+    #poli = Poly3DCollection([vor.vertices])
+    #poli.set_edgecolor('k')
+    #ax.add_collection3d(poli)
 
-    import pdb; pdb.set_trace()
-    plt.show()
+    #import pdb; pdb.set_trace()
+    #plt.show()
