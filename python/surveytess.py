@@ -49,7 +49,7 @@ class ZobovTess():
     void_table = Table()
     return void_table()
 
-  def get_voronoi_cel_from_id(self, gal_id, plot=False, **kwargs):
+  def get_voronoi_cell_from_id(self, gal_id, plot=False, **kwargs):
     cond = self.adj_table['gal_id'] == gal_id
     assert np.sum(cond) == 1, "Something is wrong with the GAL ID in ADJ table"
     ids_adj = self.adj_table[cond]['ids_adj'].data[0]
@@ -71,6 +71,30 @@ class ZobovTess():
       utils.plot_voronoi(vor)
 
     return vor
+
+  def vorocell(self,vor):
+    faces=[]
+    cc = []
+    ridges = vor.ridge_vertices
+    for ll in ridges:
+      ct=0
+      for c in ll:
+        if c==-1: break
+        ct += 1
+      if ct == len(ll):
+        faces.append(ll)
+      cc.append(np.mean(vor.vertices[ll],axis=0))
+    Nfaces = len(self.adj_table['ids_adj'][31])
+    cc = np.array(cc)
+    dist = vor.points[0]
+    l = np.linalg.norm(dist,axis=1)
+    ID = np.arange(0,len(faces),1)
+    l_sorted = np.sort(l)[:Nfaces]
+    ID_sorted = ID[np.argsort(l)][:Nfaces]
+    c_sorted = cc[ID_sorted]
+    cFaces = np.array(faces)[ID_sorted]
+    return None
+
 
 
 
