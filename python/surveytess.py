@@ -105,28 +105,38 @@ class ZobovTess():
 
     return vor
 
-  def vorocell(self,vor):
-    faces=[]
-    cc = []
-    ridges = vor.ridge_vertices
-    for ll in ridges:
-      ct=0
-      for c in ll:
-        if c==-1: break
-        ct += 1
-      if ct == len(ll):
-        faces.append(ll)
-      cc.append(np.mean(vor.vertices[ll],axis=0))
-    Nfaces = len(self.adj_table['ids_adj'][31])
-    cc = np.array(cc)
-    dist = vor.points[0]
-    l = np.linalg.norm(dist,axis=1)
-    ID = np.arange(0,len(faces),1)
-    l_sorted = np.sort(l)[:Nfaces]
-    ID_sorted = ID[np.argsort(l)][:Nfaces]
-    c_sorted = cc[ID_sorted]
-    cFaces = np.array(faces)[ID_sorted]
-    return None
+  def vorocell(self,V): #recieve a void V
+      ##### create subbox #####
+      xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
+      xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
+      bbx = (gal[:, 0] > xmin - abs(0.1 * xmin)) & (gal[:, 0] < xmax + abs(0.1 * xmax)) & (
+                  gal[:, 2] > zmin - abs(0.1 * zmin)) & (gal[:, 2] < zmax + abs(0.1 * zmax)) & (
+                        gal[:, 1] > ymin - abs(0.1 * ymin)) & (gal[:, 1] < ymax + abs(0.1 * ymax))
+      sbox = np.array([gal[bbx, 0], gal[bbx, 1], gal[bbx, 2]]).T
+      vor = Voronoi(sbox)
+      #########################
+      #### select and label all the galaxies inside the void
+      cv = []
+      for i in range(len(V)):
+          l = len(np.where(vor.points[:, 0] == V[i][0])[0])
+          if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
+      vertices = [] #vertices per galaxy. To return
+      for i in range(len(cv)):
+          p = cv[i] #select a galaxy inside a void
+          pol_id = vor.point_region[p] #select region where the galaxy point lies
+          v_pol = vor.regions[pol_id]
+          vp = vor.vertices[v_pol]
+          vertices.append(vp)
+          ridges = vor.ridge_vertices
+      ridges_id = []
+      for i in range(len(cv)):
+          ridge_pervoid = []
+          for j in range(len(ridges)):
+              if vor.ridge_point[j,0] == cv[i]:
+                  ridge_pervoid.append(j)
+          ridges_id
+      return vertices
+
 
 
 

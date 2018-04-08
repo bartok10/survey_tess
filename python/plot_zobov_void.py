@@ -59,6 +59,7 @@ cond = np.array([elem != -1 for elem in vovp])
 
 stvoids_new = stvoids[cond]
 stvol_new = stvol[cond]
+
 V =stvoids_new[19]
 xmax = max(V[:,0]); ymax = max(V[:,1]); zmax = max(V[:,2])
 xmin = min(V[:,0]); ymin = min(V[:,1]); zmin = min(V[:,2])
@@ -82,10 +83,6 @@ plt.show()
 ####################################
 
 #
-reg = vor.point_region[0]
-rid = vor.regions[reg]
-verta = vor.ridge_vertices[rid[0]]
-vp = vor.vertices[verta]
 p = cv[0]
 pc = vor.points[p]
 pol_id = vor.point_region[p]
