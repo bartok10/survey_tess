@@ -45,6 +45,39 @@ class ZobovTess():
     # gal_table['zgal'] = self.gals_orig["z"]
     return gal_table
 
+  def make_voids(self):
+    cmem,cvols = utils.cell2zones(self.zones_zobov,self.gals_zobov,self.vols_zobov)
+    af=self.voids_zobov
+    apf = []
+    for i in range(len(af)):
+        apf.append(af[i].split())
+    stvoids = []
+    svol = []
+    vovp = []
+    for i in range(1,len(apf)):
+        vovp.append(utils.overlap(apf[i]))
+    for i in range(len(vovp)):
+        if vovp[i] != -1:
+            tmpv = []; tmpvl = []
+            for j in range(len(vovp[i])):
+                tmpv.append(cmem[vovp[i][j]])
+                tmpvl.append(cvols[vovp[i][j]])
+            tmpa = np.concatenate(tmpv, axis=0)
+            tmpb = np.concatenate(tmpvl, axis=0)
+            stvoids.append(np.concatenate([cmem[i], tmpa]))
+            stvol.append(np.concatenate([cvols[i], tmpb]))
+        elif vovp[i] == -1:
+            stvoids.append(cmem[i])
+            stvol.append(cvols[i])
+
+    stvoids = np.array(stvoids)
+    stvol = np.array(stvol)
+    cond = np.array([elem != -1 for elem in vovp])
+
+    stvoids_new = stvoids[cond]
+    stvol_new = stvol[cond]
+    return stvoids_new
+
   def create_void_table(self):
     void_table = Table()
     return void_table()
