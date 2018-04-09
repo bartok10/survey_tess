@@ -52,7 +52,7 @@ class ZobovTess():
     for i in range(len(af)):
         apf.append(af[i].split())
     stvoids = []
-    svol = []
+    stvol = []
     vovp = []
     for i in range(1,len(apf)):
         vovp.append(utils.overlap(apf[i]))
@@ -109,10 +109,10 @@ class ZobovTess():
       ##### create subbox #####
       xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
       xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
-      bbx = (gal[:, 0] > xmin - abs(0.1 * xmin)) & (gal[:, 0] < xmax + abs(0.1 * xmax)) & (
-                  gal[:, 2] > zmin - abs(0.1 * zmin)) & (gal[:, 2] < zmax + abs(0.1 * zmax)) & (
-                        gal[:, 1] > ymin - abs(0.1 * ymin)) & (gal[:, 1] < ymax + abs(0.1 * ymax))
-      sbox = np.array([gal[bbx, 0], gal[bbx, 1], gal[bbx, 2]]).T
+      bbx = (self.gals_zobov[:, 0] > xmin - abs(0.1 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.1 * xmax)) & (
+                  self.gals_zobov[:, 2] > zmin - abs(0.1 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.1 * zmax)) & (
+                        self.gals_zobov[:, 1] > ymin - abs(0.1 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.1 * ymax))
+      sbox = np.array([self.gals_zobov[bbx, 0], self.gals_zobov[bbx, 1], self.gals_zobov[bbx, 2]]).T
       vor = Voronoi(sbox)
       #########################
       #### select and label all the galaxies inside the void
