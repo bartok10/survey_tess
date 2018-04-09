@@ -132,9 +132,9 @@ class ZobovTess():
       for i in range(len(cv)):
           ridge_pervoid = []
           for j in range(len(ridges)):
-              if vor.ridge_point[j,0] == cv[i]:
+              if vor.ridge_points[j,0] == cv[i]:
                   ridge_pervoid.append(j)
-          ridges_id
+          #ridges_id
       return vertices
 
 
