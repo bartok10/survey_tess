@@ -5,8 +5,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 
-dir1 = '/home/joaquin/test_st/'
-#dir1 =  '/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/'
+# dir1 = '/home/joaquin/test_st/'
+dir1 =  '/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/'
 gal = np.loadtxt(dir1+'gal_pos.txt')
 vol = np.loadtxt(dir1+'cat_zobov.ascii.vol')
 zones = np.loadtxt(dir1+'cat_zobov.zone')
