@@ -45,11 +45,44 @@ class ZobovTess():
     # gal_table['zgal'] = self.gals_orig["z"]
     return gal_table
 
+  def make_voids(self):
+    cmem,cvols = utils.cell2zones(self.zones_zobov,self.gals_zobov,self.vols_zobov)
+    af=self.voids_zobov
+    apf = []
+    for i in range(len(af)):
+        apf.append(af[i].split())
+    stvoids = []
+    stvol = []
+    vovp = []
+    for i in range(1,len(apf)):
+        vovp.append(utils.overlap(apf[i]))
+    for i in range(len(vovp)):
+        if vovp[i] != -1:
+            tmpv = []; tmpvl = []
+            for j in range(len(vovp[i])):
+                tmpv.append(cmem[vovp[i][j]])
+                tmpvl.append(cvols[vovp[i][j]])
+            tmpa = np.concatenate(tmpv, axis=0)
+            tmpb = np.concatenate(tmpvl, axis=0)
+            stvoids.append(np.concatenate([cmem[i], tmpa]))
+            stvol.append(np.concatenate([cvols[i], tmpb]))
+        elif vovp[i] == -1:
+            stvoids.append(cmem[i])
+            stvol.append(cvols[i])
+
+    stvoids = np.array(stvoids)
+    stvol = np.array(stvol)
+    cond = np.array([elem != -1 for elem in vovp])
+
+    stvoids_new = stvoids[cond]
+    stvol_new = stvol[cond]
+    return stvoids_new
+
   def create_void_table(self):
     void_table = Table()
     return void_table()
 
-  def get_voronoi_cel_from_id(self, gal_id, plot=False, **kwargs):
+  def get_voronoi_cell_from_id(self, gal_id, plot=False, **kwargs):
     cond = self.adj_table['gal_id'] == gal_id
     assert np.sum(cond) == 1, "Something is wrong with the GAL ID in ADJ table"
     ids_adj = self.adj_table[cond]['ids_adj'].data[0]
@@ -71,6 +104,40 @@ class ZobovTess():
       utils.plot_voronoi(vor)
 
     return vor
+
+  def vorocell(self,V): #recieve a void V
+      ##### create subbox #####
+      xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
+      xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
+      bbx = (self.gals_zobov[:, 0] > xmin - abs(0.1 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.1 * xmax)) & (
+                  self.gals_zobov[:, 2] > zmin - abs(0.1 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.1 * zmax)) & (
+                        self.gals_zobov[:, 1] > ymin - abs(0.1 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.1 * ymax))
+      sbox = np.array([self.gals_zobov[bbx, 0], self.gals_zobov[bbx, 1], self.gals_zobov[bbx, 2]]).T
+      vor = Voronoi(sbox)
+      #########################
+      #### select and label all the galaxies inside the void
+      cv = []
+      for i in range(len(V)):
+          l = len(np.where(vor.points[:, 0] == V[i][0])[0])
+          if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
+      vertices = [] #vertices per galaxy. To return
+      for i in range(len(cv)):
+          p = cv[i] #select a galaxy inside a void
+          pol_id = vor.point_region[p] #select region where the galaxy point lies
+          v_pol = vor.regions[pol_id]
+          vp = vor.vertices[v_pol]
+          vertices.append(vp)
+          ridges = vor.ridge_vertices
+      ridges_id = []
+      for i in range(len(cv)):
+          ridge_pervoid = []
+          for j in range(len(ridges)):
+              if vor.ridge_points[j,0] == cv[i]:
+                  ridge_pervoid.append(j)
+          #ridges_id
+      return vertices
+
+
 
 
 
