@@ -18,11 +18,11 @@ ranmask = np.loadtxt('/home/jarmijo/SDSS/mock/ranmaskDR7.dat') #mask with pixels
 ### select limits in redshift ###
 print "select redshift limits... \n"
 zmin=0.05;zmax=0.1 #zmin = sys.argv[2]; zmax= sys.argv[3]
-nd = 0.39131 #mean number of galaxies per pixel in the sample
+nd = 0.16 #mean number of galaxies per pixel in the sample
 edgemask=[]
 ranRADecZ=[]
 nl = 0.01 #new limit for edge mask
-for i in range(int(1e6)): #(N = np*NP) number density of randoms (10*np) comes here
+for i in range(int(3e5)): #(N = np*NP) number density of randoms (10*np) comes here
     rara = np.random.uniform(ramin-nl,ramax+nl)
     radec = np.random.uniform(decmin-nl,decmax+nl) #RaDec for random
     raz = np.random.uniform(zmin,zmax) #uniform redshift distribution
@@ -44,7 +44,7 @@ for i in range(int(5e4)): #different N (same number density)
     p=hp.ang2pix(NSIDE,theta=radec,phi=rara,nest=True)
     if ranmask[p] == 1.0: tapa1.append([rara,radec,raz1]); tapa2.append([rara,radec,raz2]) # random cap
 # save edges and caps (wrapping) RaDec, z 
-np.savetxt(dir1+'mock_cap_b.txt',np.array(tapa1)) 
+#np.savetxt(dir1+'mock_cap_b.txt',np.array(tapa1)) 
 np.savetxt(dir1+'mock_cap_u.txt',np.array(tapa2))
 np.savetxt(dir1+'mock_edges.txt',np.array(ranRADecZ))
 # save edgmask pixels 

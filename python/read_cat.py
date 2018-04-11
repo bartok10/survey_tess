@@ -3,7 +3,7 @@ import healpy as hp
 dir1= '/home/jarmijo/test_st/'
 cat = '/home/jarmijo/SDSS/data/sdssclean.dat'  #catalog to read
 nmask = '/home/jarmijo/SDSS/mock/maskhealpix.dr7.spec' # SDSS mask to select the galaxies
-zmin = 0.05; zmax = 0.1; Mrl = -20.4 ## dim2 as example
+zmin = 0.0; zmax = 0.05; Mrl = -19.8 ## dim2 as example
 pos = np.loadtxt(cat,usecols=(0,1,2)) #Ra,Dec,z
 Mr = np.loadtxt('/home/jarmijo/SDSS/data/sdss_corr.dat',usecols=(3,)) # Magnitude M_r to cut Main sample
 pix = np.loadtxt(nmask)
