@@ -1,5 +1,5 @@
 import numpy as np
-from surveytess import  ZobovTess
+from surveytess import  ZobovTess,voronoi_properties
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -22,9 +22,5 @@ dim2 = ZobovTess([], gal, vol, zones, af, adj_filename)# initial class
 
 V = dim2.make_voids() #method to build the watershed voids using the ZOBOV data
 VV = V[7] #choose a void
-VVV = dim2.vorocell(VV) # vorocell recieves a void and return the vertices of each voroni cell in the void
 
-f = plt.figure(figsize=(8,6))
-ax = f.add_subplot(111,projection='3d')
-for i in range(len(VVV)):
-     ax.plot(VVV[i][:,0],VVV[i][:,1],VVV[i][:,2],'+')
+

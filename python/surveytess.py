@@ -45,6 +45,35 @@ class ZobovTess():
     # gal_table['zgal'] = self.gals_orig["z"]
     return gal_table
 
+  def create_void_table(self):
+    void_table = Table()
+    return void_table()
+
+  def read_adj_ascii(self, ascii_adj):
+    f = open(ascii_adj, 'r')
+    lines = f.readlines()
+    n_gals = int(lines[0][:-1])
+    id_gal = []
+    n_adj = []
+    ids_adj = []
+    for line in lines[n_gals+1:]:
+      id_gal_aux = int(line.split(":")[0].split(" ")[0])
+      n_adj_aux = int(line.split(":")[0].split(" ")[1])
+      if n_adj_aux > 0:
+        ids_adj_aux = line.split(":")[1].split(" ")[1:-1]
+        ids_adj_aux = [int(elem) for elem in ids_adj_aux]
+      else:  # this could happen probably ZOBOV's fault
+        ids_adj_aux = None
+      id_gal += [id_gal_aux]
+      n_adj += [n_adj_aux]
+      ids_adj += [ids_adj_aux]
+    tab = Table()
+    tab['gal_id'] = id_gal
+    tab['n_adj'] = n_adj
+    tab['ids_adj'] = ids_adj
+    f.close()
+    return tab
+
   def make_voids(self):
     cmem,cvols = utils.cell2zones(self.zones_zobov,self.gals_zobov,self.vols_zobov)
     af=self.voids_zobov
@@ -78,36 +107,8 @@ class ZobovTess():
     stvol_new = stvol[cond]
     return stvoids_new
 
-  def create_void_table(self):
-    void_table = Table()
-    return void_table()
 
-  def read_adj_ascii(self, ascii_adj):
-    f = open(ascii_adj, 'r')
-    lines = f.readlines()
-    n_gals = int(lines[0][:-1])
-    id_gal = []
-    n_adj = []
-    ids_adj = []
-    for line in lines[n_gals+1:]:
-      id_gal_aux = int(line.split(":")[0].split(" ")[0])
-      n_adj_aux = int(line.split(":")[0].split(" ")[1])
-      if n_adj_aux > 0:
-        ids_adj_aux = line.split(":")[1].split(" ")[1:-1]
-        ids_adj_aux = [int(elem) for elem in ids_adj_aux]
-      else:  # this could happen probably ZOBOV's fault
-        ids_adj_aux = None
-      id_gal += [id_gal_aux]
-      n_adj += [n_adj_aux]
-      ids_adj += [ids_adj_aux]
-    tab = Table()
-    tab['gal_id'] = id_gal
-    tab['n_adj'] = n_adj
-    tab['ids_adj'] = ids_adj
-    f.close()
-    return tab
-
-  def vorocell(self,V): #recieve a void V
+  def vorocells(self,V): #recieve a void V
       ##### create subbox #####
       xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
       xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
@@ -124,36 +125,39 @@ class ZobovTess():
       #### select and label all the galaxies inside the void
       return vor,cv # voronoi scipy class
 
-class voronoi_properties(vor,galv_ID): #voronoi properties of a void
-    def __init__(self):
-        self.id = galv_id
+class voronoi_properties(): #voronoi properties of a void
+    def __init__(self,vor):
+        self.vor_tess = vor
+        self.id = 0
         self.vol = 0.
         self.region = 0
         self.vertices = []
         self.faces = []
         self.adjs = []
-
+    def galaxy_id(self,gid):
+        self.id = gid
     def cell_vertices(self):
-        self.region = vor.point_region[self.id] #region ID for galaxy ID
-        v_pol = vor.regions[self.region] # vertices IDs for region ID
-        vp = vor.vertices[v_pol] #vertices positions
+        self.region = self.vor_tess.point_region[self.id] #region ID for galaxy ID
+        v_pol = self.vor_tess.regions[self.region] # vertices IDs for region ID
+        vp = self.vor_tess.vertices[v_pol] #vertices positions
         self.vertices = vp
 
     def cell_faces(self):
         ridges_ids = []
         adjs = []
-        ridges = vor.ridge_vertices
+        ridges = self.vor_tess.ridge_vertices
         for i in range(len(ridges)):
-            if vor.ridge_points[i, 0] == self.id:
+            if self.vor_tess.ridge_points[i, 0] == self.id:
                 ridges_ids.append(i)
-                adjs.append(vor.ridge_points[i,1])
+                adjs.append(self.vor_tess.ridge_points[i,1])
         self.adjs = adjs
+        vert_faces = []
         for i in range(len(ridges_ids)):
-            face_i = rid_po[i]
-            vface_i = vor.ridge_vertices[face_i]
-            fac_ver.append(vor.vertices[vface_i])
+            face_i = ridges_ids[i]
+            vface_i = self.vor_tess.ridge_vertices[face_i]
+            vert_faces.append(self.vor_tess.vertices[vface_i])
 
-        self.faces = fac_ver
+        self.faces = vert_faces
 
 
 
