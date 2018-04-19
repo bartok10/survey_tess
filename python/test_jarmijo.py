@@ -5,17 +5,13 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 
-dir1 = '/home/jarmijo/test_st/'
+#dir1 = '/home/jarmijo/test_st/'
+dir1 = '/home/joaquin/test_st/'
 #dir1 =  '/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/'
-gal = np.loadtxt(dir1+'gal_pos_3d_com.txt')
+gal = np.loadtxt(dir1+'gal_pos.txt')
 vol = np.loadtxt(dir1+'cat_zobov.ascii.vol')
 zones = np.loadtxt(dir1+'cat_zobov.zone')
 
-v3_mem = []
-v_vols = []
-for i in range(int(max(zones))+1):
-    v_mem.append(gal[zones==i])
-    v_vols.append(vol[zones==i])
 f = open(dir1+'cat_zobov.void','r')
 af  = f.read().splitlines()
 f.close()

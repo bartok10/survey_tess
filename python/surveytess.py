@@ -82,65 +82,6 @@ class ZobovTess():
     void_table = Table()
     return void_table()
 
-  def get_voronoi_cell_from_id(self, gal_id, plot=False, **kwargs):
-    cond = self.adj_table['gal_id'] == gal_id
-    assert np.sum(cond) == 1, "Something is wrong with the GAL ID in ADJ table"
-    ids_adj = self.adj_table[cond]['ids_adj'].data[0]
-    if ids_adj is None:
-      return
-    points_ids = [gal_id]
-    for kk in ids_adj:
-      points_ids += [kk]
-
-    points = []
-    for id in points_ids:
-      x = self.gal_table[id]["X"]
-      y = self.gal_table[id]["Y"]
-      z = self.gal_table[id]["Z"]
-      points += [[x,y,z]]
-    # import pdb; pdb.set_trace()
-    vor = Voronoi(points, **kwargs)  # Scipy Voro
-    if plot:
-      utils.plot_voronoi(vor)
-
-    return vor
-
-  def vorocell(self,V): #recieve a void V
-      ##### create subbox #####
-      xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
-      xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
-      bbx = (self.gals_zobov[:, 0] > xmin - abs(0.1 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.1 * xmax)) & (
-                  self.gals_zobov[:, 2] > zmin - abs(0.1 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.1 * zmax)) & (
-                        self.gals_zobov[:, 1] > ymin - abs(0.1 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.1 * ymax))
-      sbox = np.array([self.gals_zobov[bbx, 0], self.gals_zobov[bbx, 1], self.gals_zobov[bbx, 2]]).T
-      vor = Voronoi(sbox)
-      #########################
-      #### select and label all the galaxies inside the void
-      cv = []
-      for i in range(len(V)):
-          l = len(np.where(vor.points[:, 0] == V[i][0])[0])
-          if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
-      vertices = [] #vertices per galaxy. To return
-      for i in range(len(cv)):
-          p = cv[i] #select a galaxy inside a void
-          pol_id = vor.point_region[p] #select region where the galaxy point lies
-          v_pol = vor.regions[pol_id]
-          vp = vor.vertices[v_pol]
-          vertices.append(vp)
-          ridges = vor.ridge_vertices
-      ridges_id = []
-      for i in range(len(cv)):
-          ridge_pervoid = []
-          for j in range(len(ridges)):
-              if vor.ridge_points[j,0] == cv[i]:
-                  ridge_pervoid.append(j)
-          #ridges_id
-      return vertices
-
-
-
-
-
   def read_adj_ascii(self, ascii_adj):
     f = open(ascii_adj, 'r')
     lines = f.readlines()
@@ -165,5 +106,56 @@ class ZobovTess():
     tab['ids_adj'] = ids_adj
     f.close()
     return tab
+
+  def vorocell(self,V): #recieve a void V
+      ##### create subbox #####
+      xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
+      xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
+      bbx = (self.gals_zobov[:, 0] > xmin - abs(0.1 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.1 * xmax)) & (
+                  self.gals_zobov[:, 2] > zmin - abs(0.1 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.1 * zmax)) & (
+                        self.gals_zobov[:, 1] > ymin - abs(0.1 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.1 * ymax))
+      sbox = np.array([self.gals_zobov[bbx, 0], self.gals_zobov[bbx, 1], self.gals_zobov[bbx, 2]]).T
+      vor = Voronoi(sbox)
+      cv = [] #cv contains the galaxy points IDs inside a void in "vor" space
+      for i in range(len(V)):
+          l = len(np.where(vor.points[:, 0] == V[i][0])[0])
+          if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
+      #########################
+      #### select and label all the galaxies inside the void
+      return vor,cv # voronoi scipy class
+
+class voronoi_properties(vor,galv_ID): #voronoi properties of a void
+    def __init__(self):
+        self.id = galv_id
+        self.vol = 0.
+        self.region = 0
+        self.vertices = []
+        self.faces = []
+        self.adjs = []
+
+    def cell_vertices(self):
+        self.region = vor.point_region[self.id] #region ID for galaxy ID
+        v_pol = vor.regions[self.region] # vertices IDs for region ID
+        vp = vor.vertices[v_pol] #vertices positions
+        self.vertices = vp
+
+    def cell_faces(self):
+        ridges_ids = []
+        adjs = []
+        ridges = vor.ridge_vertices
+        for i in range(len(ridges)):
+            if vor.ridge_points[i, 0] == self.id:
+                ridges_ids.append(i)
+                adjs.append(vor.ridge_points[i,1])
+        self.adjs = adjs
+        for i in range(len(ridges_ids)):
+            face_i = rid_po[i]
+            vface_i = vor.ridge_vertices[face_i]
+            fac_ver.append(vor.vertices[vface_i])
+
+        self.faces = fac_ver
+
+
+
 
 

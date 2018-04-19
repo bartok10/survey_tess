@@ -1,16 +1,21 @@
 import numpy as np
 import healpy as hp
-dir1= '/home/jarmijo/test_st/'
-cat = '/home/jarmijo/SDSS/data/sdssclean.dat'  #catalog to read
-nmask = '/home/jarmijo/SDSS/mock/maskhealpix.dr7.spec' # SDSS mask to select the galaxies
-zmin = 0.0; zmax = 0.05; Mrl = -19.8 ## dim2 as example
+#dir1= '/home/jarmijo/test_st/'
+dir1= '/home/joaquin/test_st/'
+#cat = '/home/jarmijo/SDSS/data/sdssclean.dat'  #catalog to read
+cat = '/home/joaquin/Documents/SDSS/data/sdssclean.dat'
+galprop = '/home/joaquin/Documents/SDSS/data/sdss_corr.dat'
+#nmask = '/home/jarmijo/SDSS/mock/maskhealpix.dr7.spec' # SDSS mask to select the galaxies
+nmask = '/home/joaquin/Documents/SDSS/mock/maskhealpix.dr7.spec'
+zmin = 0.0; zmax = 0.1; Mrl = -20.4 ## dim2 as example
+#
 pos = np.loadtxt(cat,usecols=(0,1,2)) #Ra,Dec,z
-Mr = np.loadtxt('/home/jarmijo/SDSS/data/sdss_corr.dat',usecols=(3,)) # Magnitude M_r to cut Main sample
+Mr = np.loadtxt(galprop,usecols=(3,)) # Magnitude M_r to cut Main sample
 pix = np.loadtxt(nmask)
+#
 NSIDE = 512; dim = 12*NSIDE**2;
 mask = np.zeros(dim); pix -=1; 
 mask[pix.astype(int)] = 1 #mask in array format
-
 #reading each column (angle to radians)
 z = pos[:,2]
 ra = pos[:,0]
@@ -35,7 +40,7 @@ z_bot = z_b[(ra_b<1.5+np.pi)&(dec_b < 0.8 + np.pi/2.)]
 ra_p = np.concatenate([ra_up,ra_bot]);dec_p = np.concatenate([dec_up,dec_bot]);z_p = np.concatenate([z_up,z_bot])
 S = np.array([ra_p,dec_p,z_p])
 np.savetxt(dir1+'subsample.txt',S.T)
-print "file saved in:" + dir1 + 'subsample.txt' 
+print "file saved in:" + dir1 + 'subsample.txt with' + str(len(S)) + '...'
 print "ng:" + str(len(z_p)) + " np:" + str(len(pix)) + "\n"
 dp = float(len(z_p))/float(len(pix))
 print "mean number of galaxies per pixel in the sample:" + str(dp)
