@@ -160,6 +160,24 @@ class voronoi_properties(): #voronoi properties of a void
         self.faces = vert_faces
 
 
+    def cell_vol(self):
+        p_adj = self.vor_tess.points[self.adjs]
+        p = self.vor_tess.points[self.id]
+        for f in range(len(self.faces)):
+            h = 0.5 * np.linalg.norm((p - p_adj[f]))
+            area = 0.  # triangle area
+            for i in range(len(faces[f]) - 2):
+                v0 = faces[f][0]
+                v1 = faces[f][i + 1]
+                v2 = faces[f][i + 2]
+                d1 = np.linalg.norm((v0 - v1))
+                d2 = np.linalg.norm((v0 - v2))
+                d3 = np.linalg.norm((v2 - v1))
+                s = 0.5 * (d1 + d2 + d3)  # semiperimeter
+                area += np.sqrt(abs(s * (s - d1) * (s - d2) * (s - d3)))  # Heron's formula
+            v = (1. / 3.) * area * h #tetrahedron volume (Heron)
+            self.vol += v
+
 
 
 
