@@ -2,6 +2,7 @@
 import numpy as np
 from scipy.spatial import Voronoi
 from astropy.table import Table
+from scipy.spatial import cKDTree
 import utils
 
 class ZobovTess():
@@ -45,9 +46,17 @@ class ZobovTess():
     # gal_table['zgal'] = self.gals_orig["z"]
     return gal_table
 
+  def nearest_gal_neigh(self,p,coordinates='degree'):
+      if coordinates == 'degree': p_com = utils.deg2com(p)
+      else: p_com = p
+      pandgals = np.vstack([p_com,self.gals_zobov])
+      kdt = cKDTree(pandgals)
+      p_neigh = kdt.query(pandgals,k=2)[1]
+      return (p_neigh[0,1] - 1)
+
   def create_void_table(self):
     void_table = Table()
-    return void_table()
+    return void_table
 
   def read_adj_ascii(self, ascii_adj):
     f = open(ascii_adj, 'r')
@@ -166,10 +175,10 @@ class voronoi_properties(): #voronoi properties of a void
         for f in range(len(self.faces)):
             h = 0.5 * np.linalg.norm((p - p_adj[f]))
             area = 0.  # triangle area
-            for i in range(len(faces[f]) - 2):
-                v0 = faces[f][0]
-                v1 = faces[f][i + 1]
-                v2 = faces[f][i + 2]
+            for i in range(len(self.faces[f]) - 2):
+                v0 = self.faces[f][0]
+                v1 = self.faces[f][i + 1]
+                v2 = self.faces[f][i + 2]
                 d1 = np.linalg.norm((v0 - v1))
                 d2 = np.linalg.norm((v0 - v2))
                 d3 = np.linalg.norm((v2 - v1))
