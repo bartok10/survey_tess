@@ -35,9 +35,9 @@ def plot_voronoi(vor, scale=1.):
     #plt.show()
 
 def deg2com(p): #degree + redshift 3D coordinates
-    ra = p[0]; dec = p[1]; z = p[2]
+    ra_r = np.radians(p[0]); dec_r = np.radians(p[1]); z = np.radians(p[2])
     dc_z = cosmo.comoving_distance(z)
-    xp = dc_z * np.cos(ra) * np.sin(dec)
-    yp = dc_z * np.sin(ra) * np.sin(dec)
-    zp = dc_z * np.cos(dec)
+    xp = dc_z * np.cos(ra_r) * np.sin(dec_r)
+    yp = dc_z * np.sin(ra_r) * np.sin(dec_r)
+    zp = dc_z * np.cos(dec_r)
     return np.array([xp,yp,zp])
