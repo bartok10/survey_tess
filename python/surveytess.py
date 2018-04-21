@@ -34,6 +34,10 @@ class ZobovTess():
     self.adj_table = self.read_adj_ascii(adj_file)
 
   def create_gal_table(self):
+    """
+      Method to save al ZOBOV galaxy information in tables
+      """
+
     gal_table = Table()
     gal_table["X"] = self.gals_zobov[:,0]
     gal_table["Y"] = self.gals_zobov[:,1]
@@ -47,6 +51,15 @@ class ZobovTess():
     return gal_table
 
   def nearest_gal_neigh(self,p,coordinates='degree'):
+      """
+        :parameter:
+        Find the closest galaxy to a point in comoving coordinates.
+        Point "p" should be in (ra,dec) degrees coord. Comoving distance
+        is also allowed. By using closest neighbor algorithm with k-d tree
+        optimization (in scipy module) a galaxy will be found.
+        :return:
+        The function return the ID of the neighbor galaxy.
+       """
       if coordinates == 'degree': p_com = utils.deg2com(p)
       else: p_com = p
       pandgals = np.vstack([p_com,self.gals_zobov])
@@ -84,6 +97,11 @@ class ZobovTess():
     return tab
 
   def make_voids(self):
+    """
+    List of void is built with the information given by ZOBOV.
+    :return:
+    Watershed voids with one or more zones formed by the Voronoi cells.
+    """
     cmem,cvols = utils.cell2zones(self.zones_zobov,self.gals_zobov,self.vols_zobov)
     af=self.voids_zobov
     apf = []
@@ -94,6 +112,7 @@ class ZobovTess():
     vovp = []
     for i in range(1,len(apf)):
         vovp.append(utils.overlap(apf[i]))
+    zone_IDs = []
     for i in range(len(vovp)):
         if vovp[i] != -1:
             tmpv = []; tmpvl = []
@@ -104,6 +123,7 @@ class ZobovTess():
             tmpb = np.concatenate(tmpvl, axis=0)
             stvoids.append(np.concatenate([cmem[i], tmpa]))
             stvol.append(np.concatenate([cvols[i], tmpb]))
+            zone_IDs.append(vovp[i])
         elif vovp[i] == -1:
             stvoids.append(cmem[i])
             stvol.append(cvols[i])
@@ -114,11 +134,16 @@ class ZobovTess():
 
     stvoids_new = stvoids[cond]
     stvol_new = stvol[cond]
-    return stvoids_new
+    return stvoids_new,zone_IDs
 
 
-  def vorocells(self,V): #recieve a void V
-      ##### create subbox #####
+  def vorocells(self,V):
+      """
+        Tessellation of small zone containing the void V and background galaxies to determine its properties.
+        :param V: Watershed void with the position of the galaxy members.
+        :return: Voronoi object 'vor' with all the information to be used in the voronoi_properties class.
+        cv is a list with the IDs of the galaxies in the Voronoi object 'vor'.
+      """
       xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
       xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
       bbx = (self.gals_zobov[:, 0] > xmin - abs(0.1 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.1 * xmax)) & (
@@ -135,6 +160,13 @@ class ZobovTess():
       return vor,cv # voronoi scipy class
 
 class voronoi_properties(): #voronoi properties of a void
+    """
+        Class to determine the Voronoi properties of a single galaxy:
+
+        :parameters:
+            vor : Voronoi object from the Voronoi class in scipy.spatial module
+        
+    """
     def __init__(self,vor):
         self.vor_tess = vor
         self.id = 0
