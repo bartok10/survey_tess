@@ -21,13 +21,27 @@ ranmask = np.loadtxt(rmsk) #mask with pixels filled by the randoms galaxies
 ### select limits in redshift ###
 print "select redshift limits... \n"
 zmin=0.0;zmax=0.1 #zmin = sys.argv[2]; zmax= sys.argv[3]
-nd = 0.5 #mean number of galaxies per pixel in the sample
+nd = 0.55134 #mean number of galaxies per pixel in the sample dim2
 edgemask=[]
 ranRADecZ=[]
 nl = 0.01 #new limit for edge mask
-for i in range(int(1e6)): #(N = np*NP) number density of randoms (10*np) comes here
-    rara = np.random.uniform(ramin-nl,ramax+nl)
-    radec = np.random.uniform(decmin-nl,decmax+nl) #RaDec for random
+for i in range(int(5e4)):
+    rara = np.random.uniform(ramin-nl,ramin)
+    radec = np.random.uniform(decmin-nl,decmin)
+    raz = np.random.uniform(zmin,zmax)
+    p=hp.ang2pix(NSIDE,theta=radec,phi=rara,nest=True) # ang to pixel for random
+    edgemask.append(p)
+    ranRADecZ.append([rara,radec,raz])
+    rara = np.random.uniform(ramax,ramax+nl)
+    radec = np.random.uniform(decmax,decmax+nl)
+    raz = np.random.uniform(zmin,zmax)
+    p=hp.ang2pix(NSIDE,theta=radec,phi=rara,nest=True) # ang to pixel for random
+    edgemask.append(p)
+    ranRADecZ.append([rara,radec,raz])
+
+for i in range(int(5e4)): #(N = np*NP) number density of randoms (10*np) comes here
+    rara = np.random.uniform(ramin,ramax)
+    radec = np.random.uniform(decmin,decmax) #RaDec for random
     raz = np.random.uniform(zmin,zmax) #uniform redshift distribution
     p=hp.ang2pix(NSIDE,theta=radec,phi=rara,nest=True) # ang to pixel for random
     if ranmask[p] == 0.0: ### if new random is outside the previous mask is an edge mock galaxy
@@ -46,10 +60,10 @@ for i in range(int(5e4)): #different N (same number density)
 
 ndp = float(len(ranRADecZ))/float(len(nP))
 den_w = ndp / nd
-print "wrapping is " + "%.3f" % den_w + " times more dense than the sample with " + str(int(ndp+len(nP))) + " ."
+print "wrapping is " + "%.3f" % den_w + " times more dense than the sample."
 # save edges and caps (wrapping) RaDec, z 
 #np.savetxt(dir1+'mock_cap_b.txt',np.array(tapa1)) 
-np.savetxt(dir1+'mock_cap_u.txt',np.array(tapa2))
+np.savetxt(dir1+'mock_cap_u.txt',np.array(tapa1))
 np.savetxt(dir1+'mock_edges.txt',np.array(ranRADecZ))
 # save edgmask pixels 
 np.savetxt(dir1+'edgemaskDR7.dat',np.array(edgemask))

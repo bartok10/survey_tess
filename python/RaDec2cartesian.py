@@ -2,7 +2,8 @@
 # %load python/RaDec2cartesian.py
 import numpy as np
 from astropy.cosmology import WMAP7 as cosmo
-dir1= '/home/jarmijo/test_st/'
+#dir1= '/home/jarmijo/test_st/'
+dir1 = '/home/joaquin/test_st/'
 gal_pos = np.loadtxt(dir1+'subsample.txt')
 edges = np.loadtxt(dir1+'mock_edges.txt')
 cap1 = np.loadtxt(dir1+'mock_cap_u.txt')

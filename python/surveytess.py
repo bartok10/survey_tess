@@ -35,6 +35,7 @@ class ZobovTess():
     self.volvoids = []
     self.gal_table = self.create_gal_table()
     self.adj_table = self.read_adj_ascii(adj_file)
+    #self.void_table = self.create_void_table()
 
   def create_gal_table(self):
     """
@@ -144,10 +145,10 @@ class ZobovTess():
     self.voids_zobov = stvoids_new
     self.zones_voids = zone_IDs
     self.Nzones = nzones
-    return stvoids_new,zone_IDs
+    #return stvoids_new,zone_IDs
 
 
-  def vorocells(self,V):
+  def sbox_void(self,V):
       """
         Tessellation of small zone containing the void V and background galaxies to determine its properties.
         :param V: Watershed void with the position of the galaxy members.
@@ -156,18 +157,18 @@ class ZobovTess():
       """
       xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
       xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
-      bbx = (self.gals_zobov[:, 0] > xmin - abs(0.1 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.1 * xmax)) & (
-                  self.gals_zobov[:, 2] > zmin - abs(0.1 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.1 * zmax)) & (
-                        self.gals_zobov[:, 1] > ymin - abs(0.1 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.1 * ymax))
+      bbx = (self.gals_zobov[:, 0] > xmin - abs(0.2 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.2 * xmax)) & (
+                  self.gals_zobov[:, 2] > zmin - abs(0.2 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.2 * zmax)) & (
+                        self.gals_zobov[:, 1] > ymin - abs(0.2 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.2 * ymax))
       sbox = np.array([self.gals_zobov[bbx, 0], self.gals_zobov[bbx, 1], self.gals_zobov[bbx, 2]]).T
-      vor = Voronoi(sbox)
-      cv = [] #cv contains the galaxy points IDs inside a void in "vor" space
-      for i in range(len(V)):
-          l = len(np.where(vor.points[:, 0] == V[i][0])[0])
-          if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
+      #vor = Voronoi(sbox)
+      #cv = [] #cv contains the galaxy points IDs inside a void in "vor" space
+      #for i in range(len(V)):
+      #    l = len(np.where(vor.points[:, 0] == V[i][0])[0])
+      #    if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
       #########################
       #### select and label all the galaxies inside the void
-      return vor,cv # voronoi scipy class
+      return sbox # voronoi scipy class
 
 class voronoi_properties(): #voronoi properties of a void
     """
@@ -177,23 +178,24 @@ class voronoi_properties(): #voronoi properties of a void
             vor : Voronoi object from the Voronoi class in scipy.spatial module
 
     """
-    def __init__(self,vor):
-        self.vor_tess = vor
+    def __init__(self,voro):
+        self.vor_tess = voro
         self.id = 0
         self.vol = 0.
         self.region = 0
         self.vertices = []
         self.faces = []
         self.adjs = []
-    def galaxy_id(self,gid):
+
+    def vor_gal_id(self,gid):
         self.id = gid
-    def cell_vertices(self):
+    #def cell_vertices(self):
         self.region = self.vor_tess.point_region[self.id] #region ID for galaxy ID
         v_pol = self.vor_tess.regions[self.region] # vertices IDs for region ID
         vp = self.vor_tess.vertices[v_pol] #vertices positions
         self.vertices = vp
 
-    def cell_faces(self):
+    #def cell_faces(self):
         ridges_ids = []
         adjs = []
         ridges = self.vor_tess.ridge_vertices
@@ -211,7 +213,7 @@ class voronoi_properties(): #voronoi properties of a void
         self.faces = vert_faces
 
 
-    def cell_vol(self):
+    #def cell_vol(self):
         p_adj = self.vor_tess.points[self.adjs]
         p = self.vor_tess.points[self.id]
         for f in range(len(self.faces)):
