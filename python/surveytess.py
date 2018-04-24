@@ -30,6 +30,9 @@ class ZobovTess():
     self.vols_zobov = vols_zobov
     self.zones_zobov = zones_zobov
     self.voids_zobov = voids_zobov
+    self.zones_voids = []
+    self.Nzones = []
+    self.volvoids = []
     self.gal_table = self.create_gal_table()
     self.adj_table = self.read_adj_ascii(adj_file)
 
@@ -45,9 +48,9 @@ class ZobovTess():
     gal_table["vol_cell"] = self.vols_zobov
     gal_table['zone_id'] = self.zones_zobov
     gal_table['ID'] = range(0,len(gal_table))
-    # gal_table["RA"] = self.gals_orig["RA"]
-    # gal_table['DEC'] = self.gals_orig["DEC"]
-    # gal_table['zgal'] = self.gals_orig["z"]
+    gal_table["RA"] = self.gals_orig[:,0]
+    gal_table['DEC'] = self.gals_orig[:,1]
+    gal_table['zgal'] = self.gals_orig[:,2]
     return gal_table
 
   def nearest_gal_neigh(self,p,coordinates='degree'):
@@ -69,6 +72,9 @@ class ZobovTess():
 
   def create_void_table(self):
     void_table = Table()
+    void_table["void_gals"] = self.voids_zobov
+    void_table["zones"] = self.zones_voids
+    void_table["n_zones"] = self.Nzones
     return void_table
 
   def read_adj_ascii(self, ascii_adj):
@@ -112,7 +118,7 @@ class ZobovTess():
     vovp = []
     for i in range(1,len(apf)):
         vovp.append(utils.overlap(apf[i]))
-    zone_IDs = []
+    zone_IDs = []; nzones=[]
     for i in range(len(vovp)):
         if vovp[i] != -1:
             tmpv = []; tmpvl = []
@@ -124,6 +130,7 @@ class ZobovTess():
             stvoids.append(np.concatenate([cmem[i], tmpa]))
             stvol.append(np.concatenate([cvols[i], tmpb]))
             zone_IDs.append(vovp[i])
+            nzones.append(len(vovp[i]))
         elif vovp[i] == -1:
             stvoids.append(cmem[i])
             stvol.append(cvols[i])
@@ -134,6 +141,9 @@ class ZobovTess():
 
     stvoids_new = stvoids[cond]
     stvol_new = stvol[cond]
+    self.voids_zobov = stvoids_new
+    self.zones_voids = zone_IDs
+    self.Nzones = nzones
     return stvoids_new,zone_IDs
 
 
@@ -165,7 +175,7 @@ class voronoi_properties(): #voronoi properties of a void
 
         :parameters:
             vor : Voronoi object from the Voronoi class in scipy.spatial module
-        
+
     """
     def __init__(self,vor):
         self.vor_tess = vor
