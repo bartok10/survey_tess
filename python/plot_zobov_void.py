@@ -5,9 +5,15 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 from scipy.spatial import Voronoi
 #
-gal = np.loadtxt('../../test_st/gal_pos.txt')
-vol = np.loadtxt('../../test_st/cat_zobov.ascii.vol')
-zones = np.loadtxt('../../test_st/cat_zobov.zone')
+# gal = np.loadtxt('../../test_st/gal_pos.txt')
+# vol = np.loadtxt('../../test_st/cat_zobov.ascii.vol')
+# zones = np.loadtxt('../../test_st/cat_zobov.zone')
+gal = np.loadtxt('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/gal_pos.txt')
+vol = np.loadtxt('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/cat_zobov.ascii.vol')
+zones = np.loadtxt('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/cat_zobov.zone')
+
+
+
 v_mem = []
 v_vols = []
 #
@@ -29,7 +35,8 @@ def overlap(void):
     elif len(void) == 3.:
         voids = -1
     return voids
-f = open('../../test_st/cat_zobov.void','r')
+# f = open('../../test_st/cat_zobov.void','r')
+f = open('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/cat_zobov.void','r')
 af  = f.read().splitlines()
 f.close()
 apf = []
