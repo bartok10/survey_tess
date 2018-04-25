@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 
 
-def cell2zones(zones,gal,vol):
+def gals2zones(zones, gal, vol):
     v_mem,v_vols = [],[]
     for i in range(int(max(zones))+1):
         v_mem.append(gal[zones==i])
@@ -35,9 +35,18 @@ def plot_voronoi(vor, scale=1.):
     #plt.show()
 
 def deg2com(p): #degree + redshift 3D coordinates
-    ra_r = np.radians(p[0]); dec_r = np.radians(p[1]); z = np.radians(p[2])
-    dc_z = cosmo.comoving_distance(z).value
-    xp = dc_z * np.cos(ra_r) * np.sin(dec_r)
-    yp = dc_z * np.sin(ra_r) * np.sin(dec_r)
-    zp = dc_z * np.cos(dec_r)
+    """
+    :param p: (RA,DEC,z)
+     RA and Dec in degrees
+    :return:
+    return (X,Y,Z) in comoving Mpc
+    """
+    ra_r = np.radians(p[0])
+    dec_r = np.radians(p[1])
+    z = p[2]
+    dc_z = cosmo.comoving_distance(z).to('Mpc').value
+    xp = dc_z * np.cos(ra_r) * np.cos(dec_r)
+    yp = dc_z * np.sin(ra_r) * np.cos(dec_r)
+    zp = dc_z * np.sin(dec_r)
     return np.array([xp,yp,zp])
+
