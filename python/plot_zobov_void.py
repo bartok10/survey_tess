@@ -27,13 +27,7 @@ def overlap(void):
     elif len(void) == 3.:
         voids = -1
     return voids
-<<<<<<< HEAD
-# f = open('../../test_st/cat_zobov.void','r')
-=======
->>>>>>> 66ed98959eca73237d0b7f8af438f9a9b480638b
-f = open('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/cat_zobov.void','r')
-af  = f.read().splitlines()
-f.close()
+
 apf = []
 for i in range(len(af)):
     apf.append(af[i].split())
