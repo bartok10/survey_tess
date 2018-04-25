@@ -5,14 +5,6 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 from scipy.spatial import Voronoi
 #
-# gal = np.loadtxt('../../test_st/gal_pos.txt')
-# vol = np.loadtxt('../../test_st/cat_zobov.ascii.vol')
-# zones = np.loadtxt('../../test_st/cat_zobov.zone')
-gal = np.loadtxt('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/gal_pos.txt')
-vol = np.loadtxt('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/cat_zobov.ascii.vol')
-zones = np.loadtxt('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/cat_zobov.zone')
-
-
 
 v_mem = []
 v_vols = []
@@ -35,7 +27,10 @@ def overlap(void):
     elif len(void) == 3.:
         voids = -1
     return voids
+<<<<<<< HEAD
 # f = open('../../test_st/cat_zobov.void','r')
+=======
+>>>>>>> 66ed98959eca73237d0b7f8af438f9a9b480638b
 f = open('/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/cat_zobov.void','r')
 af  = f.read().splitlines()
 f.close()
@@ -119,9 +114,9 @@ for i in range(len(ridges_id)):
     poli.set_facecolor('grey')
     poli.set_alpha(alpha=0.1)
     ax.add_collection3d(poli)
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 ax.plot(gal[bbx,0],gal[bbx,1],gal[bbx,2],'k.',markersize=0.5)
 ax.set_xlim(xmin,xmax)
 ax.set_ylim(ymin,ymax)
