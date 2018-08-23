@@ -20,7 +20,7 @@ import matplotlib.colors as colors
 
 ##############################################################
 #load files
-dir1 = '/home/joaquin/test_st/'
+dir1 = '/home/jarmijo/CHUVIS/'
 #dir1 =  '/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/'
 gal = np.loadtxt(dir1+'gal_pos_3d_com.txt')
 gal_rdz = np.loadtxt(dir1+'subsample.txt')
@@ -36,7 +36,7 @@ dim2 = ZobovTess(gal_rdz, gal, vol, zones, af, adj_filename)# initial class
 
 dim2.make_voids() #method to build the watershed voids using the ZOBOV data
 
-V = dim2.voids_zobov[1] #void de prueba
+V = dim2.voids_zobov[236] #void de prueba
 
 Vbox = dim2.sbox_void(V)
 

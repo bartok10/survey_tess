@@ -4,8 +4,8 @@ import numpy as np
 gal_pos = np.loadtxt('/home/jarmijo/SDSS/data/dim1/pos_RaDecZ.dat')
 edges = np.loadtxt('/home/jarmijo/SDSS/data/dim1/mock_edges.txt')
 cap = np.loadtxt('/home/jarmijo/SDSS/data/dim1/mock_cap.txt')
-ra_dim1 = gal_pos[:,0];dec_dim1=gal_pos[:,1];z_dim1=gal_pos[:,2]
-ra_b = ra_dim1[(ra_dim1>-1.3 + np.pi)&(ra_dim1<1.55+np.pi)]; dec_b = dec_dim1[(ra_dim1>-1.3 + np.pi)&(ra_dim1<1.55+np.pi)];z_b = z_dim1[(ra_dim1>-1.3 + np.pi)&(ra_dim1<1.55+np.pi)]
+ra_d = gal_pos[:,0];dec_d=gal_pos[:,1];z_d=gal_pos[:,2]
+ra_b = ra_d[(ra_d>-1.3 + np.pi)&(ra_d<1.55+np.pi)]; dec_b = dec_d[(ra_d>-1.3 + np.pi)&(ra_d<1.55+np.pi)];z_b = z_d[(ra_d>-1.3 + np.pi)&(ra_d<1.55+np.pi)]
 ra_up = ra_b[(ra_b<1.2+np.pi)&(dec_b > 0.8 + np.pi/2.)]
 dec_up = dec_b[(ra_b<1.2+np.pi)&(dec_b > 0.8 + np.pi/2.)]
 z_up = z_b[(ra_b<1.2+np.pi)&(dec_b > 0.8 + np.pi/2.)]

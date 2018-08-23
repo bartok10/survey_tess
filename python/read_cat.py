@@ -1,7 +1,7 @@
 import numpy as np
 import healpy as hp
 #dir1= '/home/jarmijo/test_st/'
-dir1= '/home/joaquin/test_st/'
+dir1= '/joaquin/test_st/'
 #cat = '/home/jarmijo/SDSS/data/sdssclean.dat'  #catalog to read
 cat = '/home/joaquin/Documents/SDSS/data/sdssclean.dat'
 galprop = '/home/joaquin/Documents/SDSS/data/sdss_corr.dat'
