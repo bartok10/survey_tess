@@ -32,7 +32,7 @@ nl = 0.01 #new limit for edge mask
 tapa1=[]
 zl = 0.001 # thickness of each cap... it must be very thin
 
-for i in range(int(5e5)):  # (N = np*NP) number density of randoms (10*np) comes here
+for i in range(int(1.5e6)):  # (N = np*NP) number density of randoms (10*np) comes here
     rara = np.random.uniform(ramin - nl, ramax + nl)
     radec = np.random.uniform(decmin - nl, decmax + nl)  # RaDec for random
     raz = np.random.uniform(zmin, zmax)  # uniform redshift distribution
@@ -42,7 +42,7 @@ for i in range(int(5e5)):  # (N = np*NP) number density of randoms (10*np) comes
         ranRADecZ.append(
             [rara, radec, raz])  #save edge mock galaxynP = list(set(edgemask)) #number of pixels in the edge-mask
 #
-for i in range(int(5e4)): #different N (same number density)
+for i in range(int(10e4)): #different N (same number density)
     rara = np.random.uniform(ramin,ramax)
     radec = np.random.uniform(decmin,decmax)
     raz1 = np.random.uniform(zmax-zl,zmax+zl) # zmin needs to be higher than the thickne
