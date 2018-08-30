@@ -22,8 +22,8 @@ import matplotlib.colors as colors
 #load files
 dir1 = '/home/jarmijo/CHUVIS/'
 #dir1 =  '/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/'
-gal = np.loadtxt(dir1+'gal_pos_3d_com.txt')
-gal_rdz = np.loadtxt(dir1+'subsample.txt')
+gal = np.loadtxt(dir1+'gal_XYZ.dat')
+gal_rdz = np.loadtxt(dir1+'subsample.dat')
 vol = np.loadtxt(dir1+'cat_zobov.ascii.vol',skiprows=1)
 zones = np.loadtxt(dir1+'cat_zobov.zone',skiprows=1)
 f = open(dir1+'cat_zobov.void','r')

@@ -6,12 +6,12 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 
 
-def cell2zones(zones,gal,vol):
-    v_mem,v_vols = [],[]
-    for i in range(int(max(zones))+1):
-        v_mem.append(gal[zones==i])
-        v_vols.append(vol[zones==i])
-    return v_mem, v_vols
+def cell2zones(zones):#####
+	v_mem = []
+	Nh = np.arange(0,len(zones))
+	for i in range(int(max(zones))+1):
+		v_mem.append(Nh[zones==i])
+	return v_mem # members in format of index in gal_table
 
 def overlap(void):
     #v_0 = int(void[0])

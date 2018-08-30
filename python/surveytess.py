@@ -31,6 +31,7 @@ class ZobovTess():
     self.zones_zobov = zones_zobov
     self.voids_zobov = voids_zobov
     self.zones_voids = []
+    self.gals_zones = []
     self.Nzones = []
     self.volvoids = []
     self.gal_table = self.create_gal_table()
@@ -103,49 +104,38 @@ class ZobovTess():
     f.close()
     return tab
 
+  def make_zones(self):
+    """
+    List of zones from ZOBOV with galaxy members.
+    :return:
+    table of zones with index of galaxies.
+    """
+    self.gals_zones = utils.cell2zones(self.zones_zobov)
+
   def make_voids(self):
     """
     List of void is built with the information given by ZOBOV.
     :return:
-    Watershed voids with one or more zones formed by the Voronoi cells.
+    table of voids with one or more zones formed by the Voronoi cells.
     """
-    cmem,cvols = utils.cell2zones(self.zones_zobov,self.gals_zobov,self.vols_zobov)
     af=self.voids_zobov
     apf = []
     for i in range(len(af)):
         apf.append(af[i].split())
-    stvoids = []
-    stvol = []
     vovp = []
-    for i in range(1,len(apf)):
+    for i in range(1,len(apf)-1):
         vovp.append(utils.overlap(apf[i]))
     zone_IDs = []; nzones=[]
     for i in range(len(vovp)):
         if vovp[i] != -1:
-            tmpv = []; tmpvl = []
-            for j in range(len(vovp[i])):
-                tmpv.append(cmem[vovp[i][j]])
-                tmpvl.append(cvols[vovp[i][j]])
-            tmpa = np.concatenate(tmpv, axis=0)
-            tmpb = np.concatenate(tmpvl, axis=0)
-            stvoids.append(np.concatenate([cmem[i], tmpa]))
-            stvol.append(np.concatenate([cvols[i], tmpb]))
             zone_IDs.append(vovp[i])
             nzones.append(len(vovp[i]))
         elif vovp[i] == -1:
-            stvoids.append(cmem[i])
-            stvol.append(cvols[i])
-
-    stvoids = np.array(stvoids)
-    stvol = np.array(stvol)
-    cond = np.array([elem != -1 for elem in vovp])
-
-    stvoids_new = stvoids[cond]
-    stvol_new = stvol[cond]
-    self.voids_zobov = stvoids_new
-    self.zones_voids = zone_IDs
-    self.Nzones = nzones
-    #return stvoids_new,zone_IDs
+            zone_IDs.append(i)
+            nzones.append(0)
+    cond = np.array([elem != 0 for elem in nzones])
+    self.zones_voids = np.array(zone_IDs,dtype=object)[cond]
+    self.Nzones = np.array(nzones)[cond]    
 
 
   def sbox_void(self,V):
