@@ -18,6 +18,11 @@ adj_filename = dir1+"cat_zobov.ascii.adj"
 
 dim2 = ZobovTess(gal_rdz, gal, vol, zones, af, adj_filename)# initial class
 
-def test_nearest_gal_neigh():
+# def test_nearest_gal_neigh():
+if 1:
+    p = [149.21800,41.25610, 0.04377]
+    dim2.nearest_gal_neigh(p, coordinates='degree')
+
+    stop
     for i in range(len(dim2.gals_zobov)):
         assert i == dim2.nearest_gal_neigh(dim2.gals_zobov[i], coordinates='com')

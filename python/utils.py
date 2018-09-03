@@ -10,7 +10,8 @@ def cell2zones(zones):#####
 	v_mem = []
 	Nh = np.arange(0,len(zones))
 	for i in range(int(max(zones))+1):
-		v_mem.append(Nh[zones==i])
+		v_mem.append(list(Nh[zones==i]))
+
 	return v_mem # members in format of index in gal_table
 
 def overlap(void):
@@ -35,7 +36,9 @@ def plot_voronoi(vor, scale=1.):
     #plt.show()
 
 def deg2com(p): #degree + redshift 3D coordinates
-    ra_r = np.radians(p[0]); dec_r = np.radians(p[1]); z = p[2]
+    ra_r = np.radians(p[0])
+    dec_r = np.radians(p[1])
+    z = p[2]
     dc_z = cosmo.comoving_distance(z).value
     xp = dc_z * np.cos(ra_r) * np.sin(dec_r)
     yp = dc_z * np.sin(ra_r) * np.sin(dec_r)

@@ -32,7 +32,8 @@ class ZobovTess():
     self.voids_zobov = voids_zobov
     self.gal_table = self.create_gal_table()
     self.adj_table = self.read_adj_ascii(adj_file)
-    # self.void_table = self.create_void_table()
+    self.zone_table = self.create_zone_table()
+    self.void_table = self.create_void_table()
 
   def create_gal_table(self):
     """
@@ -43,7 +44,7 @@ class ZobovTess():
     gal_table["X"] = self.gals_zobov[:,0]
     gal_table["Y"] = self.gals_zobov[:,1]
     gal_table["Z"] = self.gals_zobov[:,2]
-    gal_table["vol_cell"] = self.vols_zobov
+    gal_table["vol_zobov"] = self.vols_zobov
     gal_table['zone_id'] = self.zones_zobov.astype(int)
     gal_table['ID'] = range(0, len(gal_table))
     gal_table["RA"] = self.gals_orig[:,0]
@@ -52,8 +53,8 @@ class ZobovTess():
     gal_table["RA_d"] = gal_table["RA"] * 180. / np.pi
     gal_table['DEC_d'] = gal_table["DEC"] * 180. / np.pi
 
-
     return gal_table
+
 
   def nearest_gal_neigh(self, p, coordinates='degree'):
     """
@@ -87,7 +88,9 @@ class ZobovTess():
     zone_table = Table()
     id_zones = range(0, len(np.unique(self.zones_zobov)))
     zone_table["ID"] = id_zones
-    # metodo inconcluso
+    zone_table['gals_ids'] = utils.cell2zones(self.zones_zobov)
+    zone_table['n_gals'] = [len(a) for a in zone_table['gals_ids']]
+    return zone_table
 
   def create_void_table(self):
     void_table = Table()
@@ -97,7 +100,6 @@ class ZobovTess():
     void_table["zones"] = zones
     void_table["n_zones"] = n_zones
     return void_table
-
 
   def read_adj_ascii(self, ascii_adj):
     f = open(ascii_adj, 'r')
@@ -131,6 +133,7 @@ class ZobovTess():
     table of zones with index of galaxies.
     """
     self.gals_zones = utils.cell2zones(self.zones_zobov)
+
 
   def make_voids(self):
     """
