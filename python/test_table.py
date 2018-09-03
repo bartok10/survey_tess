@@ -8,7 +8,8 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 #
 #load files
-dir1 = '/home/jarmijo/CHUVIS/'
+# dir1 = '/home/jarmijo/CHUVIS/'
+dir1 = '/home/ntejos/python/survey_tess/CHUVIS/'
 gal = np.loadtxt(dir1+'gal_XYZ.dat')
 gal_rdz = np.loadtxt(dir1+'subsample.dat')
 vol = np.loadtxt(dir1+'cat_zobov.ascii.vol',skiprows=1)
