@@ -1,5 +1,5 @@
 import numpy as np
-from surveytess import  ZobovTess,voronoi_properties
+from surveytess import  ZobovTess, VoronoiCell
 from scipy.spatial import Voronoi
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -49,7 +49,7 @@ for i in range(len(V)):
   l = len(np.where(voro_void.points[:, 0] == V[i][0])[0])
   if l != 0: cv.append(np.where(V[i][0] == voro_void.points[:, 0])[0][0])
 
-celda = voronoi_properties(voro_void)
+celda = VoronoiCell(voro_void)
 #celda.vor_gal_id(cv[2])
 #
 vol_void = []
