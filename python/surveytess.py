@@ -36,7 +36,7 @@ class ZobovTess():
     self.volvoids = []
     self.gal_table = self.create_gal_table()
     self.adj_table = self.read_adj_ascii(adj_file)
-    #self.void_table = self.create_void_table()
+    # self.void_table = self.create_void_table()
 
   def create_gal_table(self):
     """
@@ -48,29 +48,43 @@ class ZobovTess():
     gal_table["Y"] = self.gals_zobov[:,1]
     gal_table["Z"] = self.gals_zobov[:,2]
     gal_table["vol_cell"] = self.vols_zobov
-    gal_table['zone_id'] = self.zones_zobov
-    gal_table['ID'] = range(0,len(gal_table))
+    gal_table['zone_id'] = self.zones_zobov.astype(int)
+    gal_table['ID'] = range(0, len(gal_table))
     gal_table["RA"] = self.gals_orig[:,0]
     gal_table['DEC'] = self.gals_orig[:,1]
     gal_table['zgal'] = self.gals_orig[:,2]
+    gal_table["RA_d"] = gal_table["RA"] * 180. / np.pi
+    gal_table['DEC_d'] = gal_table["DEC"] * 180. / np.pi
+
+
     return gal_table
 
-  def nearest_gal_neigh(self,p,coordinates='degree'):
+  def nearest_gal_neigh(self, p, coordinates='degree'):
       """
         :parameter:
+        p : list
+            [RA, DEC, z] with RA and DEC in degrees
+
         Find the closest galaxy to a point in comoving coordinates.
-        Point "p" should be in (ra,dec) degrees coord. Comoving distance
+        Point "p" should be in (ra,dec) degrees coord and redshift as a float. Comoving distance
         is also allowed. By using closest neighbor algorithm with k-d tree
         optimization (in scipy module) a galaxy will be found.
         :return:
         The function return the ID of the neighbor galaxy.
        """
-      if coordinates == 'degree': p_com = utils.deg2com(p)
-      else: p_com = p
-      pandgals = np.vstack([p_com,self.gals_zobov])
+      if coordinates == 'degree':
+          p_com = utils.deg2com(p)
+      else:
+          p_com = p
+      pandgals = np.vstack([p_com, self.gals_zobov])
+      # import pdb;pdb.set_trace()
       kdt = cKDTree(pandgals)
-      p_neigh = kdt.query(pandgals,k=2)[1]
-      return (p_neigh[0,1] - 1)
+      p_neigh = kdt.query(pandgals,k=2)
+      print("Distance to closest neighbour is {:.1f} Mpc".format(p_neigh[0][0,1]))
+      ind = p_neigh[1][0,1] - 1  # -1 because p adds 1 to all indices
+      if ind == -1:
+        ind = p_neigh[1][0,0] - 1  # this is something weird of kdt.query() sometimes it flips the indices
+      return ind
 
   def create_void_table(self):
     void_table = Table()

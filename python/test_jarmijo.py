@@ -20,8 +20,10 @@ import matplotlib.colors as colors
 
 ##############################################################
 #load files
-dir1 = '/home/jarmijo/CHUVIS/'
+# dir1 = '/home/jarmijo/CHUVIS/'
 #dir1 =  '/media/ntejos/disk1/projects/COS-Web/voronoi/test_st/'
+dir1 = '/home/ntejos/python/survey_tess/CHUVIS/'
+
 gal = np.loadtxt(dir1+'gal_XYZ.dat')
 gal_rdz = np.loadtxt(dir1+'subsample.dat')
 vol = np.loadtxt(dir1+'cat_zobov.ascii.vol',skiprows=1)
@@ -72,3 +74,7 @@ for i in range(len(cv)):
         poli.set_facecolor('red')
         ax.add_collection(poli)
 plt.show()
+
+def test_nearest_gal_neigh():
+    for i in range(len(dim2.gals_zobov)):
+        assert i == dim2.nearest_gal_neigh(dim2.gals_zobov[i], coordinates='com')
