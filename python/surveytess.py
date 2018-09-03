@@ -30,10 +30,6 @@ class ZobovTess():
     self.vols_zobov = vols_zobov
     self.zones_zobov = zones_zobov
     self.voids_zobov = voids_zobov
-    self.zones_voids = []
-    self.gals_zones = []
-    self.Nzones = []
-    self.volvoids = []
     self.gal_table = self.create_gal_table()
     self.adj_table = self.read_adj_ascii(adj_file)
     # self.void_table = self.create_void_table()
@@ -60,18 +56,19 @@ class ZobovTess():
     return gal_table
 
   def nearest_gal_neigh(self, p, coordinates='degree'):
-      """
-     :parameter:
-        p : list
+    """
+    :parameter:
+    p : list
             [RA, DEC, z] with RA and DEC in degrees
 
-        Find the closest galaxy to a point in comoving coordinates.
-        Point "p" should be in (ra,dec) degrees coord and redshift as a float. Comoving distance
-        is also allowed. By using closest neighbor algorithm with k-d tree
-        optimization (in scipy module) a galaxy will be found.
-        :return:
-        The function return the ID of the neighbor galaxy.
-       """
+    Find the closest galaxy to a point in comoving coordinates.
+    Point "p" should be in (ra,dec) degrees coord and redshift as a float. Comoving distance
+    is also allowed. By using closest neighbor algorithm with k-d tree
+    optimization (in scipy module) a galaxy will be found.
+
+    :return:
+    The function return the ID of the neighbor galaxy.
+    """
     if coordinates == 'degree':
         p_com = utils.deg2com(p)
     else:
