@@ -61,7 +61,7 @@ class ZobovTess():
 
   def nearest_gal_neigh(self, p, coordinates='degree'):
       """
-        :parameter:
+     :parameter:
         p : list
             [RA, DEC, z] with RA and DEC in degrees
 
@@ -72,34 +72,34 @@ class ZobovTess():
         :return:
         The function return the ID of the neighbor galaxy.
        """
-      if coordinates == 'degree':
-          p_com = utils.deg2com(p)
-      else:
-          p_com = p
-      pandgals = np.vstack([p_com, self.gals_zobov])
-      # import pdb;pdb.set_trace()
-      kdt = cKDTree(pandgals)
-      p_neigh = kdt.query(pandgals,k=2)
-      print("Distance to closest neighbour is {:.1f} Mpc".format(p_neigh[0][0,1]))
-      ind = p_neigh[1][0,1] - 1  # -1 because p adds 1 to all indices
-      if ind == -1:
+    if coordinates == 'degree':
+        p_com = utils.deg2com(p)
+    else:
+        p_com = p
+    pandgals = np.vstack([p_com, self.gals_zobov])
+    # import pdb;pdb.set_trace()
+    kdt = cKDTree(pandgals)
+    p_neigh = kdt.query(pandgals,k=2)
+    print("Distance to closest neighbour is {:.1f} Mpc".format(p_neigh[0][0,1]))
+    ind = p_neigh[1][0,1] - 1  # -1 because p adds 1 to all indices
+    if ind == -1:
         ind = p_neigh[1][0,0] - 1  # this is something weird of kdt.query() sometimes it flips the indices
-      return ind
+    return ind
 
   def create_zone_table(self):
-      zone_table = Table()
-      id_zones = range(0, len(np.unique(self.zones_zobov)))
-      zone_table["ID"] = id_zones
-      # metodo inconcluso
+    zone_table = Table()
+    id_zones = range(0, len(np.unique(self.zones_zobov)))
+    zone_table["ID"] = id_zones
+    # metodo inconcluso
 
   def create_void_table(self):
-      void_table = Table()
-      # get relevant information
-      zones, n_zones = self.make_voids()
-      void_table['ID'] = range(0, len(zones))  # Unique void IDs
-      void_table["zones"] = zones
-      void_table["n_zones"] = n_zones
-      return void_table
+    void_table = Table()
+    # get relevant information
+    zones, n_zones = self.make_voids()
+    void_table['ID'] = range(0, len(zones))  # Unique void IDs
+    void_table["zones"] = zones
+    void_table["n_zones"] = n_zones
+    return void_table
 
 
   def read_adj_ascii(self, ascii_adj):
@@ -164,26 +164,26 @@ class ZobovTess():
     return zones_IDs, Nzones
 
   def sbox_void(self,V):
-      """
-        Tessellation of small zone containing the void V and background galaxies to determine its properties.
-        :param V: Watershed void with the position of the galaxy members.
-        :return: Voronoi object 'vor' with all the information to be used in the voronoi_properties class.
-        cv is a list with the IDs of the galaxies in the Voronoi object 'vor'.
-      """
-      xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
-      xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
-      bbx = (self.gals_zobov[:, 0] > xmin - abs(0.2 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.2 * xmax)) & (
-                  self.gals_zobov[:, 2] > zmin - abs(0.2 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.2 * zmax)) & (
-                        self.gals_zobov[:, 1] > ymin - abs(0.2 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.2 * ymax))
-      sbox = np.array([self.gals_zobov[bbx, 0], self.gals_zobov[bbx, 1], self.gals_zobov[bbx, 2]]).T
-      #vor = Voronoi(sbox)
-      #cv = [] #cv contains the galaxy points IDs inside a void in "vor" space
-      #for i in range(len(V)):
-      #    l = len(np.where(vor.points[:, 0] == V[i][0])[0])
-      #    if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
-      #########################
-      #### select and label all the galaxies inside the void
-      return sbox # voronoi scipy class
+    """
+    Tessellation of small zone containing the void V and background galaxies to determine its properties.
+    :param V: Watershed void with the position of the galaxy members.
+    :return: Voronoi object 'vor' with all the information to be used in the voronoi_properties class.
+    cv is a list with the IDs of the galaxies in the Voronoi object 'vor'.
+    """
+    xmax = max(V[:, 0]);ymax = max(V[:, 1]);zmax = max(V[:, 2])
+    xmin = min(V[:, 0]);ymin = min(V[:, 1]);zmin = min(V[:, 2])
+    bbx = (self.gals_zobov[:, 0] > xmin - abs(0.2 * xmin)) & (self.gals_zobov[:, 0] < xmax + abs(0.2 * xmax)) & (
+                self.gals_zobov[:, 2] > zmin - abs(0.2 * zmin)) & (self.gals_zobov[:, 2] < zmax + abs(0.2 * zmax)) & (
+                    self.gals_zobov[:, 1] > ymin - abs(0.2 * ymin)) & (self.gals_zobov[:, 1] < ymax + abs(0.2 * ymax))
+    sbox = np.array([self.gals_zobov[bbx, 0], self.gals_zobov[bbx, 1], self.gals_zobov[bbx, 2]]).T
+    #vor = Voronoi(sbox)
+    #cv = [] #cv contains the galaxy points IDs inside a void in "vor" space
+    #for i in range(len(V)):
+    #    l = len(np.where(vor.points[:, 0] == V[i][0])[0])
+    #    if l != 0: cv.append(np.where(V[i][0] == vor.points[:, 0])[0][0])
+    #########################
+    #### select and label all the galaxies inside the void
+    return sbox # voronoi scipy class
 
 
 class VoronoiCell(): #voronoi properties of a void
